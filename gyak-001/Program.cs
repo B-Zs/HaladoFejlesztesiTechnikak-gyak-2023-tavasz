@@ -25,13 +25,13 @@ namespace _2023_02_28_Events
                                                            // default handlert ami kiirja hogy az adott
                                                            // kategoriahoz meg nincs feedback
 
-            processor.AddAction(Category.BugReport, WriteToConsole, true); // 3. parameter: doOverwrite
-            processor.AddAction(Category.FeatureRequest, WriteToConsole, true); // ha false akkor ezt az actiont IS meghivja
+            fproc.AddAction(Category.BugReport, WriteToConsole, true); // 3. parameter: doOverwrite
+            fproc.AddAction(Category.FeatureRequest, WriteToConsole, true); // ha false akkor ezt az actiont IS meghivja
 
-            fproc.AddFeature(opinion1);
-            fproc.AddFeature(bugreport1);
-            fproc.AddFeature(featreq1);
-            fproc.AddFeature(opinion2);
+            fproc.AddFeedback(opinion1);
+            fproc.AddFeedback(bugreport1);
+            fproc.AddFeedback(featreq1);
+            fproc.AddFeedback(opinion2);
 
         }
 
