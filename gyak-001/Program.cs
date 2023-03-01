@@ -95,7 +95,7 @@ namespace _2023_02_28_Events
                // kategoriahoz meg nincs feedback
 
             fproc.AddAction(Category.BUGREPORT, WriteToConsole, true); // 3. parameter: doOverwrite
-            fproc.AddAction(Category.FEATUREREQ, WriteToConsole, true); // ha false akkor ezt az actiont IS meghivja
+            fproc.AddAction(Category.FEATUREREQ, WriteToConsole, false); // ha false akkor ezt az actiont IS meghivja
 
             fproc.AddFeedback(opinion1);
             fproc.AddFeedback(bugreport1);
