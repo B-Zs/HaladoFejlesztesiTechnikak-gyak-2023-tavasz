@@ -34,15 +34,13 @@ namespace _2023_02_28_Events
     internal class FeedbackProcessor
     {
         private Dictionary<Category, Action<Feedback>> Actions;
+        private Action<Feedback> DefaultAction;
         private List<Feedback> Feedbacks;
 
         public FeedbackProcessor(Action<Feedback> defaultAction)
         {
             Actions = new Dictionary<Category, Action<Feedback>>();
-            foreach (Category cat in Enum.GetValues(typeof(Category)))
-            {
-                Actions[cat] = defaultAction;
-            }
+            DefaultAction = defaultAction;
             Feedbacks = new List<Feedback>();
         }
 
@@ -53,7 +51,13 @@ namespace _2023_02_28_Events
             {
                 foreach (Feedback feedb in Feedbacks)
                 {
-                    Actions[feedb.category].Invoke(feedb);
+                    try
+                    {
+                        Actions[feedb.category].Invoke(feedb);
+                    } catch (System.Collections.Generic.KeyNotFoundException e)
+                    {
+                        DefaultAction.Invoke(feedb);
+                    }
                 }
 
 
@@ -64,8 +68,15 @@ namespace _2023_02_28_Events
 
         public void AddAction(Category category, Action<Feedback> action, bool doOverwrite)
         {
-            if (doOverwrite) Actions[category] = action;
-            else Actions[category] += action;
+            try
+            {
+                if (doOverwrite) Actions[category] = action;
+                else Actions[category] += action;
+            } catch (System.Collections.Generic.KeyNotFoundException e)
+            {
+                Actions[category] = action; // lehet, hogy doOverwrite false, de meg nem letezik
+                // Actions[category] kulcs, mert csak a default action van definialva...
+            }
         }
     }
 
