@@ -38,7 +38,6 @@ namespace _2023_02_28_Events
 
         public FeedbackProcessor(Action<Feedback> defaultAction)
         {
-            Console.WriteLine("fb processor created");
             Actions = new Dictionary<Category, Action<Feedback>>();
             foreach (Category cat in Enum.GetValues(typeof(Category)))
             {
@@ -50,22 +49,23 @@ namespace _2023_02_28_Events
         public void AddFeedback(Feedback fb)
         {
             Feedbacks.Add(fb);
-            Console.WriteLine("Feedback added" + Feedbacks.Count);
             if (Feedbacks.Count == 3)
             {
-                Console.WriteLine("fb no 3");
                 foreach (Feedback feedb in Feedbacks)
                 {
                     Actions[feedb.category].Invoke(feedb);
                 }
+
+
+                Feedbacks.Clear();
             }
-            Feedbacks.Clear();
+            
         }
 
         public void AddAction(Category category, Action<Feedback> action, bool doOverwrite)
         {
-            if (doOverwrite) Actions[category] += action;
-            else Actions[category] = action;
+            if (doOverwrite) Actions[category] = action;
+            else Actions[category] += action;
         }
     }
 
@@ -74,7 +74,7 @@ namespace _2023_02_28_Events
         static void WriteToConsole(Feedback fb)
         {
             Console.WriteLine(
-                "No Action defined for Feedbacks of category " + fb.category
+                "Feedback received: " + fb.category + " - " + fb.description
             );
         }
 
@@ -94,13 +94,15 @@ namespace _2023_02_28_Events
                // default handlert ami kiirja hogy az adott
                // kategoriahoz meg nincs feedback
 
-            //fproc.AddAction(Category.BUGREPORT, WriteToConsole, true); // 3. parameter: doOverwrite
-            //fproc.AddAction(Category.FEATUREREQ, WriteToConsole, true); // ha false akkor ezt az actiont IS meghivja
+            fproc.AddAction(Category.BUGREPORT, WriteToConsole, true); // 3. parameter: doOverwrite
+            fproc.AddAction(Category.FEATUREREQ, WriteToConsole, true); // ha false akkor ezt az actiont IS meghivja
 
             fproc.AddFeedback(opinion1);
             fproc.AddFeedback(bugreport1);
             fproc.AddFeedback(featreq1);
             fproc.AddFeedback(opinion2);
+
+            Console.ReadLine();
 
         }
 
