@@ -113,6 +113,12 @@ namespace _2023_02_28_Events
             fproc.AddFeedback(featreq1);
             fproc.AddFeedback(opinion2);
 
+            fproc.AddAction(Category.BUGREPORT, feedback => { Console.WriteLine("bugreport received!!!"); }, false);
+            fproc.AddAction(Category.OPINION, WriteToConsole, true);
+
+            fproc.AddFeedback(new Feedback(Category.BUGREPORT, "bugbugbug"));
+            fproc.AddFeedback(new Feedback(Category.OPINION, "Let me opine if I may..."));
+
             Console.ReadLine();
 
         }
