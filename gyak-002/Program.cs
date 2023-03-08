@@ -22,7 +22,7 @@ namespace Westeros
         {
             XDocument doc = XDocument.Load("02_war_of_westeros.xml");
 
-            var names = doc.Descendants("name").Select(x => x.Value).ToList();
+            var names = doc.Descendants("name").Select(x => x.Value);
             names.ToConsole("Elokeszuletek");
 
             // Q1 = How many houses participated?
@@ -36,7 +36,7 @@ namespace Westeros
             // Q2 = List the battles with the "ambush" type
             var ambushBattle = doc.Descendants("battle")
                 .Where(b => b.Element("type")?.Value == "ambush")
-                .Descendants("name").Select(x => x.Value).ToList();
+                .Descendants("name").Select(x => x.Value);
 
             ambushBattle.ToConsole("Q2-megoldasMethodSyntax");
 
