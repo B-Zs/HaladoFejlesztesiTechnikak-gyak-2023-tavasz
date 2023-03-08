@@ -24,6 +24,14 @@ namespace Westeros
 
             var names = doc.Descendants("name").Select(x => x.Value).ToList();
             names.ToConsole("Elokeszuletek");
+
+            // Q1 = How many houses participated?
+            var distinctHouses = doc.
+                Descendants("house").
+                Select(node => node.Value).
+                Distinct();
+            Console.WriteLine($"TOTAL: {distinctHouses.Count()}");
+            distinctHouses.ToConsole("Q1");
         }
 
     }
