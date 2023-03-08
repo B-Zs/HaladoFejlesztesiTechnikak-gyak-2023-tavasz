@@ -56,6 +56,11 @@ namespace Westeros
                                                     select battleNode.Element("name")?.Value;
                                Console.WriteLine($"{battlesWithDefWinAndMajorCaptures.Count()} esetben nyert vedekezo csapat es volt majorcature");
             battlesWithDefWinAndMajorCaptures.ToConsole("3. feladat");
+            
+            var battlesWithDefWinAndMajorCaptures2 = doc.Descendants("battle")
+                .Where(battle => battle.Element("outcome")?.Value == "defender" && battle.Element("majorcapture")?.Value != "0")
+                .Descendants("name").Select(n => n.Value);
+            battlesWithDefWinAndMajorCaptures2.ToConsole("3. feladat method syntax-szal");
         }
 
     }
