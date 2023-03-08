@@ -32,6 +32,19 @@ namespace Westeros
                 Distinct();
             Console.WriteLine($"TOTAL: {distinctHouses.Count()}");
             distinctHouses.ToConsole("Q1");
+
+            // Q2 = List the battles with the "ambush" type
+            var ambushBattle = doc.Descendants("battle")
+                .Where(b => b.Element("type")?.Value == "ambush")
+                .Descendants("name").Select(x => x.Value).ToList();
+
+            ambushBattle.ToConsole("Q2-megoldasMethodSyntax");
+
+            
+            var ambushBattle2 = from battleNode in doc.Descendants("battle")
+                     where battleNode.Element("type")?.Value == "ambush"
+                     select battleNode.Element("name")?.Value;
+            ambushBattle2.ToConsole("Q2-megoldasQuerySyntax");
         }
 
     }
