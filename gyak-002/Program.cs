@@ -45,6 +45,17 @@ namespace Westeros
                      where battleNode.Element("type")?.Value == "ambush"
                      select battleNode.Element("name")?.Value;
             ambushBattle2.ToConsole("Q2-megoldasQuerySyntax");
+            
+            //Q3.Hány olyan csata volt, ahol a védekező sereg győzött, és volt híres fogoly ?
+            var battlesWithDefWinAndMajorCaptures = from battleNode in doc.Descendants("battle")
+                                                    where battleNode.Element("outcome")?.Value == "defender" &&
+                                                           //(int)battleNode.Element("majorcapture") > 0
+                                                           int.TryParse(battleNode.Element("majorcapture")?.Value, out var defWin) &&
+                                                           defWin > 0
+                                                           // battleNode.Element("majorcapture")?.Value != "0"
+                                                    select battleNode.Element("name")?.Value;
+                               Console.WriteLine($"{battlesWithDefWinAndMajorCaptures.Count()} esetben nyert vedekezo csapat es volt majorcature");
+            battlesWithDefWinAndMajorCaptures.ToConsole("3. feladat");
         }
 
     }
