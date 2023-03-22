@@ -1,4 +1,5 @@
 using System;
+using System.Reflection;
 
 namespace Validation.Classes
 {
@@ -19,13 +20,74 @@ namespace Validation.Classes
     // alkalmazni lehetne...
     public class RangeAttribute : Attribute
     {
-        private int _minValue;
-        private int _maxValue;
+        public int _minValue { get; }
+        public int _maxValue { get; }
 
         public RangeAttribute(int minval, int maxval)
         {
             _minValue= minval;
             _maxValue= maxval;
+        }
+    }
+
+    interface IValidation
+    {
+        public bool Validate(object instance, PropertyInfo propInfo);
+    }
+
+    public class RangeValidation : IValidation
+    {
+        RangeAttribute range;
+
+        public RangeValidation(RangeAttribute range)
+        {
+            this.range = range;
+        }
+
+        public bool Validate(object instance, PropertyInfo propInfo)
+        {
+            int val = (int)propInfo.GetValue(instance);
+            if (val > range._minValue && val < range._maxValue) {
+                return true;
+            }
+            return false;
+        }
+    }
+
+    public class Validator
+    {
+        public bool Validate(object instance)
+        {
+            foreach (var prop in instance.GetType().GetProperties())
+            {
+                //Console.WriteLine($"Property: {prop.Name}");
+                
+                foreach (var attr in prop.GetCustomAttributes(false))
+                {
+                    // if range attribute... akkor aszerint kell validalni
+                    if (attr is RangeAttribute)
+                    {
+                        RangeValidation rvalidation = new RangeValidation(
+                            (RangeAttribute)attr   
+                        );
+                        bool isValid = rvalidation.Validate(instance, prop);
+                        if (!isValid)
+                        {
+                            return false;
+                        }
+                    }
+
+                    // if maxlength attribute... akkor aszerint kell validalni
+                    if (attr is MaxLengthAttribute)
+                    {
+                        Console.WriteLine("MaxLength attribute!");
+                    }
+
+                    //Console.WriteLine($"\t{attr.ToString()}");
+                }
+            }
+
+            return true;
         }
     }
 }
