@@ -13,16 +13,32 @@ namespace Validation.Classes
             _maxLength = maxlen;
         }
     }
+
+    [AttributeUsage(AttributeTargets.Property)]
+    // a fenti sor nelkul barmire, pl. osztalyra vagy konstruktorra is
+    // alkalmazni lehetne...
+    public class RangeAttribute : Attribute
+    {
+        private int _minValue;
+        private int _maxValue;
+
+        public RangeAttribute(int minval, int maxval)
+        {
+            _minValue= minval;
+            _maxValue= maxval;
+        }
+    }
 }
 
 namespace HFT_het04_validation
 {
+    
     class Person
     {
-        //[Validation.Classes.MaxLength(20)]
+        [Validation.Classes.MaxLength(20)]
         public string Name { get; set; }
 
-        //[Validation.Classes.Range(50, 300)]
+        [Validation.Classes.Range(50, 300)]
         public int Height { get; set; }
     }
 
@@ -37,23 +53,25 @@ namespace HFT_het04_validation
                 Height = 190
             };
 
-            //Person invalidPerson1 = new Person()
-            //{
-            //    Name = "012345678901234567891",
-            //    Height = 190
-            //};
+            Person invalidPerson1 = new Person()
+            {
+                Name = "012345678901234567891",
+                Height = 190
+            };
 
-            //Person invalidPerson2 = new Person()
-            //{
-            //    Name = "Alex Fergusson",
-            //    Height = 22
-            //};
+            Person invalidPerson2 = new Person()
+            {
+                Name = "Alex Fergusson",
+                Height = 22
+            };
 
-            //Validation.Classes.Validator validator = new Validation.Classes.Validator();
-            //Console.WriteLine("1st person: " + validator.Validate(validPerson));
-            //Console.WriteLine("2nd person: " + validator.Validate(invalidPerson1));
-            //Console.WriteLine("3rd person: " + validator.Validate(invalidPerson2));
-            //Console.ReadLine();
+            Validation.Classes.Validator validator = new Validation.Classes.Validator();
+            // validator.Validate() elso korben irja ki az objektum osszes
+            // tulajdonsagat, es azok osszes attributumat!
+            Console.WriteLine("1st person: " + validator.Validate(validPerson));
+            Console.WriteLine("2nd person: " + validator.Validate(invalidPerson1));
+            Console.WriteLine("3rd person: " + validator.Validate(invalidPerson2));
+            Console.ReadLine();
         }
     }
 }
