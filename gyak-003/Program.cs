@@ -2,7 +2,17 @@ using System;
 
 namespace Validation.Classes
 {
+    [AttributeUsage(AttributeTargets.Property)]
+    // a fenti sor nelkul barmire, pl. osztalyra vagy konstruktorra is
+    // alkalmazni lehetne...
+    public class MaxLengthAttribute : Attribute
+    {
+        private int _maxLength;
 
+        public MaxLengthAttribute(int maxlen) { 
+            _maxLength = maxlen;
+        }
+    }
 }
 
 namespace HFT_het04_validation
