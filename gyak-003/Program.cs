@@ -8,9 +8,10 @@ namespace Validation.Classes
     // alkalmazni lehetne...
     public class MaxLengthAttribute : Attribute
     {
-        private int _maxLength;
+        public int _maxLength { get; }
 
-        public MaxLengthAttribute(int maxlen) { 
+        public MaxLengthAttribute(int maxlen)
+        {
             _maxLength = maxlen;
         }
     }
@@ -25,8 +26,8 @@ namespace Validation.Classes
 
         public RangeAttribute(int minval, int maxval)
         {
-            _minValue= minval;
-            _maxValue= maxval;
+            _minValue = minval;
+            _maxValue = maxval;
         }
     }
 
@@ -47,10 +48,34 @@ namespace Validation.Classes
         public bool Validate(object instance, PropertyInfo propInfo)
         {
             int val = (int)propInfo.GetValue(instance);
-            if (val > range._minValue && val < range._maxValue) {
+            if (val > range._minValue && val < range._maxValue)
+            {
                 return true;
             }
             return false;
+        }
+    }
+
+    internal class MaxLengthValidation : IValidation
+    {
+        MaxLengthAttribute maxLength;
+
+        public MaxLengthValidation(MaxLengthAttribute maxLength)
+        {
+            this.maxLength = maxLength;
+        }
+
+        public bool Validate(object instance, PropertyInfo propertyInfo)
+        {
+            if (propertyInfo.PropertyType == typeof(string))
+            {
+                var value = (string)propertyInfo.GetValue(instance);
+                return value.Length <= maxLength._maxLength;
+            }
+            else
+            {
+                throw new InvalidOperationException();
+            }
         }
     }
 
@@ -61,14 +86,14 @@ namespace Validation.Classes
             foreach (var prop in instance.GetType().GetProperties())
             {
                 //Console.WriteLine($"Property: {prop.Name}");
-                
+
                 foreach (var attr in prop.GetCustomAttributes(false))
                 {
                     // if range attribute... akkor aszerint kell validalni
                     if (attr is RangeAttribute)
                     {
                         RangeValidation rvalidation = new RangeValidation(
-                            (RangeAttribute)attr   
+                            (RangeAttribute)attr
                         );
                         bool isValid = rvalidation.Validate(instance, prop);
                         if (!isValid)
@@ -80,7 +105,14 @@ namespace Validation.Classes
                     // if maxlength attribute... akkor aszerint kell validalni
                     if (attr is MaxLengthAttribute)
                     {
-                        Console.WriteLine("MaxLength attribute!");
+                        MaxLengthValidation mlvalidation = new MaxLengthValidation(
+                            (MaxLengthAttribute)attr
+                        );
+                        bool isValid = mlvalidation.Validate(instance, prop);
+                        if (!isValid)
+                        {
+                            return false;
+                        }
                     }
 
                     //Console.WriteLine($"\t{attr.ToString()}");
@@ -94,7 +126,7 @@ namespace Validation.Classes
 
 namespace HFT_het04_validation
 {
-    
+
     class Person
     {
         [Validation.Classes.MaxLength(20)]
