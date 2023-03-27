@@ -79,43 +79,49 @@ namespace Validation.Classes
         }
     }
 
+    //IF not factory:
+    // - ugly, repeated code, hard to find new variable names,
+    // - no real possibility of generalizing the Validator, we want to be type safe in the methods  
+    // ---> let a factory take care of the instantiations & casts,
+    // only the factory will have to know the full list of the concrete validator attribute types in our code.
+    // Other solutions are also possible 
+    // (e.g. the attribute knows how to validate, BUT that solution breaks layering, makes logic appear on the data level)
+    internal class ValidationFactory
+    {
+        public IValidation GetValidation(Attribute attribute)
+        {
+            if (attribute is MaxLengthAttribute)
+            {
+                return new MaxLengthValidation((MaxLengthAttribute)attribute);
+            }
+
+            if (attribute is RangeAttribute)
+            {
+                return new RangeValidation((RangeAttribute)attribute);
+            }
+
+            return null;
+        }
+    }
+
     public class Validator
     {
         public bool Validate(object instance)
         {
+            ValidationFactory validationFactory = new ValidationFactory();
+
             foreach (var prop in instance.GetType().GetProperties())
             {
                 //Console.WriteLine($"Property: {prop.Name}");
 
                 foreach (var attr in prop.GetCustomAttributes(false))
                 {
-                    // if range attribute... akkor aszerint kell validalni
-                    if (attr is RangeAttribute)
+                    // elony: Validator osztaly igy fix marad, akkor is ha tobbfele validation-t hozunk letre kesobb
+                    IValidation validation = validationFactory.GetValidation((System.Attribute)attr);
+                    if (validation?.Validate(instance, prop) == false)
                     {
-                        RangeValidation rvalidation = new RangeValidation(
-                            (RangeAttribute)attr
-                        );
-                        bool isValid = rvalidation.Validate(instance, prop);
-                        if (!isValid)
-                        {
-                            return false;
-                        }
+                        return false;
                     }
-
-                    // if maxlength attribute... akkor aszerint kell validalni
-                    if (attr is MaxLengthAttribute)
-                    {
-                        MaxLengthValidation mlvalidation = new MaxLengthValidation(
-                            (MaxLengthAttribute)attr
-                        );
-                        bool isValid = mlvalidation.Validate(instance, prop);
-                        if (!isValid)
-                        {
-                            return false;
-                        }
-                    }
-
-                    //Console.WriteLine($"\t{attr.ToString()}");
                 }
             }
 
