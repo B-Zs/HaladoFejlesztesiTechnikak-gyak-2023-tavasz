@@ -6,15 +6,17 @@ Code-first megközelítéssel készítse el az alábbiakat:
 
 0.) A főprogram váza így néz ki:
 
+```
 class Program
+{
+    static void Main(string[] args)
     {
-        static void Main(string[] args)
-        {
-            CarDbContext ctx = new CarDbContext();
-            ctx.Brand.Select(x => x.Name).ToConsole("BRANDS");
-            
-        }
+        CarDbContext ctx = new CarDbContext();
+        ctx.Brand.Select(x => x.Name).ToConsole("BRANDS");
+        
     }
+}
+```
 
 Ehhez valósítsuk meg:
 - a ToConsole kiterjesztését az IEnumerable<T típusnak>
@@ -46,6 +48,7 @@ c.) Az Átlagos BasePrice-t irassuk ki márkánként
 ... a) Egy Car objektumhoz egy Brand tartozik, amely több Car-nak is lehet a brandje. Beállítjuk az idegen kujlcsot is (BrandId), törléskor pedig a ClientSetNull opciót használjuk
 ... b) Az adatbázisban az alábbi értékek szerepeljenek:
 
+```
 Brand bmw = new Brand() { Id = 1, Name = "BMW" };
 Brand citroen = new Brand() { Id = 2, Name = "Citroen" };
 Brand audi = new Brand() { Id = 3, Name = "Audi" };
@@ -59,3 +62,4 @@ Car audi2 = new Car() { Id = 6, BrandId = audi.Id, BasePrice = 25000, Model = "A
 
 modelBuilder.Entity<Brand>().HasData(bmw, citroen, audi);
 modelBuilder.Entity<Car>().HasData(bmw1, bmw2, citroen1, citroen2, audi1, audi2);
+```
