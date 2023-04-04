@@ -33,7 +33,7 @@ namespace Cars_Database_Application
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<Car>(entity => entity
-            .HasOne<Brand>()
+            .HasOne(entity => entity.Brand)
             .WithMany(brand => brand.Cars)
             .HasForeignKey(car => car.BrandId)
             .OnDelete(DeleteBehavior.ClientSetNull));
