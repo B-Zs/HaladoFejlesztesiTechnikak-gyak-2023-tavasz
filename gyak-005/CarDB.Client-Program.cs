@@ -1,4 +1,6 @@
-using CardDB.Models;
+using CarDB.Data;
+using CarDB.Models;
+using CarDB.Repository;
 
 namespace Cars_Database_Application
 {
@@ -18,6 +20,11 @@ namespace Cars_Database_Application
         static void Main(string[] args)
         {
             CarDbContext ctx = new CarDbContext();
+            ctx.Brand.Select(x => x.Name).ToConsole("BRANDS");
+
+            BrandRepository brep = new BrandRepository(ctx);
+            brep.Update(new Brand() { Id = 1, Name = "XYZ" });
+
             ctx.Brand.Select(x => x.Name).ToConsole("BRANDS");
         }
     }
